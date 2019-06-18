@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+<style>
+    .fa-share-alt{
+        background: linear-gradient(135deg, #12BCB0 20%, #FABE0E 70%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        border-image: linear-gradient(135deg, #12BCB0 20%, #FABE0E 70%);
+        border-image-slice: 1;
+        animation: background 60s infinite alternate;
+    }
+    @keyframes background {
+        100% {
+          background-position: 0 200px;
+        }
+      }
+      
+    .notiy {
+        background-color: darkgreen;
+        position: fixed;
+        right: 20px;
+        top: 10px;
+        padding: 5px;
+    }
+    .notiy p {
+        color: white;
+        margin: 0px;
+    }
+
+</style>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a id="share" href="#" title="Share! Click to copy link of page"><i class="fa fa-share-alt" aria-hidden="true"></i></a></li>
+            {% for step in page.split('/') %}
+            <li class="breadcrumb-item">{{step}}</li>
+            {% endfor %}
+        </ol>
+    </nav>
+<hr>
+<div>
+    {{text|safe}}
+</div>
+
+<script>
+    function notiy(text, time=5) {
+        let elem = $('<div>', {
+            id: 'notiy',
+            css: {
+                backgroundColor: 'darkgreen',
+                position: 'fixed',
+                right: '20px',
+                top: '10px',
+                padding: '5px' 
+            }    
+        }).appendTo('body');
+        
+        let ppp = $('<p>', {
+            text: text,
+            css: {
+                color: 'white',
+                margin: '0px'
+            }    
+        }).appendTo(elem);
+        setTimeout(function(){ elem.remove()}, time*1000);
+    }
+    
+    $('#share').click( function() {
+        console.log('share');
+        navigator.clipboard.writeText('<a href="{{request.url}}">Link</a>')
+        .then(() => {
+            notiy('Cкопировано в буфер обмена!')
+        })
+        .catch(err => {
+            console.log('Something went wrong', err);
+        });
+    });
+</script>
+{% endblock %}
