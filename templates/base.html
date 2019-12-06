@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <meta charset="UTF-8">
@@ -17,74 +18,10 @@
     </title>
 </head>
 <body>
-<style>
-    .flex-xl-nowrap {
-        flex-wrap: nowrap!important;
-    }
-    .bd-sidebar {
-        flex: 0 1 320px;
-        position: sticky;
-        height: calc(100vh - 4rem);
-    }
-    .active {
-        color: #fff;
-        background-color: #007bff;
-        border-radius: .25rem;
-    }
-    .breadcrumb {
-        padding: 0.44rem 1rem;
-    }
-    .menu {
-        list-style: none;
-
-    }
-    .sub {
-        display: none;
-        padding-left: 15px;
-        margin-bottom: 5px;
-    }
-    #drop {
-        color: #495057;
-        width: 200%;
-        margin-top: 5px;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #80bdff;
-        border-radius: 5px;
-        padding: 10px;
-        display: none;
-        z-index: 9999;
-    }
-    .file>a::before {
-        font-size: 20px;
-        content: '\1F4C4';
-    }
-    .dir>a::before {
-        font-size: 20px;
-        content: '\1F4C1';
-        /*\1F4C2 : открытая */
-    }
-    .free {
-        position: fixed;
-        bottom: 20px;
-        right: 30px;
-        font-size: 1em;
-        background: linear-gradient(135deg, #12BCB0 20%, #FABE0E 70%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-        padding: 0.3em 0.6em ;
-        border: 3px solid transparent;
-        border-image: linear-gradient(135deg, #12BCB0 20%, #FABE0E 70%);
-        border-image-slice: 1;
-        }
-
-</style>
-<a id="share" class="free" href="#" title="Share! Click to copy link of page"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
 <div class="container-fluid">
     <div class="row flex-xl-nowrap">
         <div class="col-12 col-md-3 col-xl-2 py-md-3  bd-sidebar">
-            <input id="search" type="search" class="form-control" placeholder="Search">
+            <input id="search" type="search" class="form-control form-control-lg" placeholder="Search">
             <span id="drop"></span>
             <hr>
             <nav class="accord menu">
@@ -111,6 +48,7 @@
         </main>
     </div>
 </div>
+<script src="{{ url_for('static', filename='js/master.js') }}"></script>
 <!--script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script-->
@@ -120,84 +58,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
 </body>
-<script>
-    $.each(JSON.parse(sessionStorage.getItem('menu')), function(index, val) {
-        console.log(index)
-        if (val){
-            $($('.accord').find('.sub')[index]).show()
-        }
-    })
-
-
-
-    function *gens(elems) {
-        for(elem of elems) {
-            yield $(elem).is(':visible')
-        }
-    }
-
-    // Menu
-    $('.dir').children('a').click(function(e){
-        e.preventDefault();
-        $(this).parent().children('ul').toggle();
-        console.log('a');
-        sessionStorage.setItem('menu', JSON.stringify([...gens($('.accord').find('.sub'))]))
-
-    });
-    // Search
-    $('#search').blur(function() {
-        $('#drop').hide('slow');
-    });
-    $('#search').keyup(function(){
-        console.log('search');
-        if ($(this).val().length > 2){
-            axios.get('/search', {
-                params: {
-                    q: $(this).val(),
-                }
-            })
-            .then(function (response) {
-                $('#drop').empty();
-                console.log(response.data);
-                var data = response.data.data
-                for (file of data){
-                    let elem = $('<div>', {}).appendTo('#drop');
-                    let name = $('<h5>', {
-                    }).append($('<a>', {
-                            href: file.href,
-                            html: file.file    
-                    })).appendTo(elem)
-                    for (line of file.lines) {
-                        $('<p>', {
-                            html: line
-                        }).append(
-                            $('<p>', {
-                                text: '...'    
-                            })
-                        ).appendTo(elem)
-                    }
-                    $('<hr>').appendTo(elem)
-                }
-                $('<p>', {
-                    text: `time: ${response.data.time}`   
-                }).appendTo('#drop')
-                $('#drop').show('slow')
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            }); 
-        } else {
-             if ($('#drop').is(':visible')) {
-                $('#drop').hide('slow')
-             }
-            $('#drop').empty();
-            
-        }
-        
-    });
-</script>
 </html>
