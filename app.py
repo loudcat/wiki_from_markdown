@@ -6,13 +6,13 @@ import markdown
 
 app = Flask(__name__)
 app.debug = True
-_dir = 'wiki'
+_dir = 'example_dir'
 
 
 # Context
 @app.context_processor
 def tree_context():
-    tree = get_tree('wiki')
+    tree = get_tree('example_dir')
 
     return dict(tree=tree)
 
@@ -31,7 +31,7 @@ def view(path):
 @app.route('/search')
 def search():
     if request.args.get('q'):
-        out = search_in_files('wiki', request.args.get('q'))
+        out = search_in_files('example_dir', request.args.get('q'))
     return jsonify(out)
 
 if __name__ == '__main__':

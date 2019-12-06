@@ -47,7 +47,7 @@ def search_in_files(_dir, word):
     return res
 
 if __name__ == '__main__':
-    # node = get_tree('wiki')
+    # node = get_tree('example_dir')
     # print(node)
-    r = search_in_files('wiki', 'test')
+    r = search_in_files('example_dir', 'test')
     print(r)
