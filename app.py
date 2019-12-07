@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, jsonify
-from werkzeug.serving import run_simple
-from walk import get_tree, search_in_files, branch
-from flask import Markup
 import markdown
+from flask import Flask, render_template, request, jsonify
+from flask import Markup
+from werkzeug.serving import run_simple
+
+from walk import get_tree, search_in_files
 
 app = Flask(__name__)
 app.debug = True
@@ -16,6 +17,7 @@ def tree_context():
 
     return dict(tree=tree)
 
+
 @app.route('/')
 def main():
     return render_template('home.html')
@@ -28,11 +30,13 @@ def view(path):
         text = Markup(markdown.markdown(file.read()))
     return render_template('page.html', page=path, text=text)
 
+
 @app.route('/search')
 def search():
     if request.args.get('q'):
         out = search_in_files('example_dir', request.args.get('q'))
     return jsonify(out)
+
 
 if __name__ == '__main__':
     run_simple('localhost', 5000, app,
