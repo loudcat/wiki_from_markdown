@@ -11,7 +11,6 @@ def branch(func):
         end = time.time()
         work_time = end - start
         return {'data': data, 'time': work_time}
-
     return wrapper
 
 
@@ -31,12 +30,10 @@ def get_tree(_dir, level=0):
 
 @branch
 def search_in_files(_dir, word):
+    """ Search """
     reg_exp = re.compile(r'({})'.format(word), flags=re.IGNORECASE)
     response = []
     for file in Path(_dir).rglob('*.md'):
-        # if r.search(file.name):
-        #     response.append({'file': r.sub(r'<b>\1</b>',file.name), 'lines': []})
-
         if file.stat().st_size > 0:
             with file.open() as open_file:
                 for line in open_file.readlines():
