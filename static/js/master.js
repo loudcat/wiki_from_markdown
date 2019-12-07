@@ -22,6 +22,7 @@
 
     });
     // Search
+
     $('#search').blur(function() {
         $('#drop').hide('slow');
     });
@@ -36,27 +37,31 @@
             .then(function (response) {
                 $('#drop').empty();
                 console.log(response.data);
-                var data = response.data.data
-                for (file of data){
-                    let elem = $('<div>', {}).appendTo('#drop');
-                    let name = $('<h5>', {
-                    }).append($('<a>', {
-                            href: file.href,
-                            html: file.file
-                    })).appendTo(elem)
-                    for (line of file.lines) {
-                        $('<p>', {
-                            html: line
-                        }).append(
+                let data = response.data.data
+                if (data.length > 0){
+                    for (file of data){
+                        let elem = $('<div>', {}).appendTo('#drop');
+                        let name = $('<h5>', {
+                        }).append($('<a>', {
+                                href: file.href,
+                                html: file.file
+                        })).appendTo(elem)
+                        for (line of file.lines) {
                             $('<p>', {
-                                text: '...'
-                            })
-                        ).appendTo(elem)
+                                html: line
+                            }).append(
+                                $('<p>', {
+                                    text: '...'
+                                })
+                            ).appendTo(elem)
+                        }
+                        $('<hr>').appendTo(elem)
                     }
-                    $('<hr>').appendTo(elem)
+                } else {
+                    let elem = $('<h5>', {text: 'Not found'}).appendTo('#drop');
                 }
                 $('<p>', {
-                    text: `time: ${response.data.time}`
+                    text: ` search time: ${response.data.time}`
                 }).appendTo('#drop')
                 $('#drop').show('slow')
             })
@@ -70,8 +75,7 @@
              if ($('#drop').is(':visible')) {
                 $('#drop').hide('slow')
              }
-            $('#drop').empty();
-
+             $('#drop').empty();
         }
 
     });
