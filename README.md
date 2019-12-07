@@ -1,3 +1,3 @@
-# wiki_from_markdown
+# Wiki from markdown
 
 simple project for share markdown files from repo
