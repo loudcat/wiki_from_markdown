@@ -13,8 +13,7 @@ _dir = 'example_dir'
 # Context
 @app.context_processor
 def tree_context():
-    tree = get_tree('example_dir')
-
+    tree = get_tree(_dir)
     return dict(tree=tree)
 
 
@@ -25,7 +24,6 @@ def main():
 
 @app.route('/<path:path>')
 def view(path):
-    text = ''
     with open(path) as file:
         text = Markup(markdown.markdown(file.read()))
     return render_template('page.html', page=path, text=text)
@@ -34,7 +32,7 @@ def view(path):
 @app.route('/search')
 def search():
     if request.args.get('q'):
-        out = search_in_files('example_dir', request.args.get('q'))
+        out = search_in_files(_dir, request.args.get('q'))
     return jsonify(out)
 
 
